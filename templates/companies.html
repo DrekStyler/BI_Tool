@@ -5,17 +5,17 @@
 <a href="/logout">Logout</a>
 
 <div class="add-company">
-  <h3>Add a new task:</h3>
+  <h3>Add a new Company:</h3>
   <table>
     <tr>
-      <form action="{{ url_for('new_task') }}" method="post">
+      <form action="{{ url_for('new_company') }}" method="post">
         <td>
-          <label>Copmany Name:</label>
+          <label>Company Name:</label>
           <input name="name" type="text">
         </td>
         <td>
           <label>Revenue:</label>
-          <input name="due_date" type="text" width="120px">
+          <input name="revenue" type="number" width="120px">
         </td>
         <td>
           &nbsp;
@@ -40,7 +40,7 @@
           <td width="300px">{{ company.name }}</td>
           <td width="100px">{{ company.revenue }}</td>
           <td>
-            <a href="{{ url_for('delete_entry', company_id = Company.company_id) }}">Delete</a>
+            <a href="{{ url_for('delete_entry', company_id = company.company_id) }}">Delete</a>
           </td>
         </tr>
       {% endfor %}
@@ -49,3 +49,5 @@
   <br>
   <br>
 </div>
+
+{% endblock %}

@@ -1,12 +1,17 @@
 import sqlite3
 from functools import wraps
 from flask import Flask, flash, redirect, render_template, request, session, url_for, g
+from forms import AddCompanyForm
 
 app = Flask(__name__)
 app.config.from_object('_config')
 
 def connect_db():
     return sqlite3.connect(app.config['DATABASE_PATH'])
+
+def __init__(self, name, revenue):
+    self.name = name
+    self.revenue = revenue
 
 def login_required(test):
     @wraps(test)
@@ -38,21 +43,24 @@ def login():
 
 @app.route('/companies/')
 def companies():
-    g.db = connect.db()
+    g.db = connect_db()
     cur = g.db.execute(
-        'select name, revenue from companies'
+        'select name,revenue,company_id from companies'
     )
+
     open_companies = [
-        dict(name=row[0], revenue=row[1])
+        dict(name=row[0], revenue=row[1], company_id=row[2]) for row in cur.fetchall()
     ]
+    print(open_companies)
+    print(companies)
     g.db.close()
     return render_template(
-        'companies',
-        form=addCompanyForm(request.form),
+        'companies.html',
+        form=AddCompanyForm(request.form),
         open_companies=open_companies
     )
 
-@app.route('/add/', method=['POST'])
+@app.route('/add/', methods=['POST'])
 @login_required
 def new_company():
     g.db = connect_db()
@@ -60,9 +68,10 @@ def new_company():
     revenue = request.form['revenue']
     if not name or not revenue:
         flash("All fields are required")
-        return redirect(url_for('tasks'))
+        return redirect(url_for('companies'))
+        print('nay')
     else:
-        g.db.execute('insert into companies (name,revenue) values (?,?)', [
+        g.db.execute('insert into companies(name,revenue) values (?,?)', [
                 request.form['name'],
                 request.form['revenue']
             ]
@@ -70,13 +79,14 @@ def new_company():
         g.db.commit()
         g.db.close()
         flash('New Entry Was Added')
+        print('yay')
         return redirect(url_for('companies'))
 
 @app.route('/delete/<int:company_id>/')
 @login_required
 def delete_entry(company_id):
     g.db = connect_db()
-    g.db.execute('delete from companies where company_id =' +str(company_id))
+    g.db.execute('delete from companies where company_id='+str(company_id))
     g.db.commit()
     g.db.close()
     flash('Company Deleted')
