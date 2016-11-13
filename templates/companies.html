@@ -1,0 +1,51 @@
+{% extends "_base.html" %}
+{% block content %}
+
+<h1>Fishin Analytics</h1>
+<a href="/logout">Logout</a>
+
+<div class="add-company">
+  <h3>Add a new task:</h3>
+  <table>
+    <tr>
+      <form action="{{ url_for('new_task') }}" method="post">
+        <td>
+          <label>Copmany Name:</label>
+          <input name="name" type="text">
+        </td>
+        <td>
+          <label>Revenue:</label>
+          <input name="due_date" type="text" width="120px">
+        </td>
+        <td>
+          &nbsp;
+          &nbsp;
+          <input class="button" type="submit" value="Save">
+        </td>
+      </form>
+    </tr>
+  </table>
+
+  <div class="datagrid">
+      <table>
+        <thead>
+          <tr>
+            <th width="300px"><strong>Company Name</strong></th>
+            <th width="100px"><strong>Revenue</strong></th>
+            <th><strong>Actions</strong></th>
+          </tr>
+        </thead>
+        {% for company in open_companies %}
+        <tr>
+          <td width="300px">{{ company.name }}</td>
+          <td width="100px">{{ company.revenue }}</td>
+          <td>
+            <a href="{{ url_for('delete_entry', company_id = Company.company_id) }}">Delete</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <br>
+  <br>
+</div>
