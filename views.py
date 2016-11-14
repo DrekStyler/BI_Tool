@@ -1,4 +1,4 @@
-import sqlite3
+import sqlite3, pygal, json
 from functools import wraps
 from flask import Flask, flash, redirect, render_template, request, session, url_for, g
 from forms import AddCompanyForm
@@ -51,9 +51,17 @@ def companies():
     open_companies = [
         dict(name=row[0], revenue=row[1], company_id=row[2]) for row in cur.fetchall()
     ]
-    print(open_companies)
-    print(companies)
     g.db.close()
+    # title = 'Average Revenue'
+    # bar_chart = pygal.Bar(width=1200, height=600, explicit_size=True, title=title, disable_xml_declaration=True)
+    # html = """
+    #         <h3>%s<//h3>
+    #           <div>
+    #              %s
+    #          </div>
+    #     </html>
+    #     """ % (title, bar_chart.render())
+    # return html
     return render_template(
         'companies.html',
         form=AddCompanyForm(request.form),
